@@ -22,7 +22,7 @@ A Pygame block engine with linear exploration (a work in progress).
 #### Instructions for working with pygame with python 3 in Geany
 Download python 3.2 from https://www.python.org/ftp/python/3.2.5/python-3.2.5.msi
  (must be 3.2 for pygame to work) and install (during install, choose install for All Users)
-Download Pygame 1.9.2 py3.2 (make sure you get python 3.2 version) and install
+Download Pygame 1.9.2 py3.2 (make sure you get python 3.2 version) from http://pygame.org/ftp/pygame-1.9.2a0.win32-py3.2.msi and install
 Download Geany from geany.org and install
 In Geany, change options for python:
 open a python file or save the untitled file to untitled.py (in order to be able to change py file settings), then click Edit, Preferences, Editor, "Indentation" tab.
