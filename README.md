@@ -4,8 +4,10 @@ A Pygame block engine with linear exploration (a work in progress).
 ## Known issues
 * jumping downward into door can cause falling back out but warping to next room, causing you to fall through bottom of world
 	
-## Changes since platformy
-(all changes since initial commit that had 1-color blocks, exit on door, 1-frame non-alpha sprite)
+## Differences from Platformy
+All changes since initial commit are original to blockability. Initial commit was an upload of Platformy, for tracking changes from version that was the basis of the fork.
+Platformy all-inclusive feature list: 1-color blocks (gray blocks, blue background, blue door), gravity, pygame-based hit detection, sys.exit() & pygame quit on door, 1-frame non-alpha sprite player character, two types of Blocks: P for platform, E for exit.
+Platformy known issue list: tick method used in wrong spot, crash on exit (tested only in Python 3), jump through walls if going downward diagonally fast enough, uses inheritance instead of block properties, included an mp3 with incompatible license which was not implemented (no sound was implemented)
 
 ## Credits
 * based on LiefAndersen's platformy
