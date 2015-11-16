@@ -16,7 +16,7 @@ A Pygame block engine with linear exploration (a work in progress).
 * A2backw by OATMEALCRUNCH CC-0 (117818__oatmealcrunch__a2backw.ogg)
 
 ### Sound
-* door by rivernile7 CC-BY (door-wood-open and door-wood-close are based on 
+* door by rivernile7 CC-BY (door-wood-open and door-wood-close are based on 234244__rivernile7__door-open-and-close.wav)
 
 ### Info for Developers
 #### Instructions for working with pygame with python 3 in Geany
