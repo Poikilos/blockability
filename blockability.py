@@ -3,7 +3,7 @@ import pygame
 from pygame import *
 import sys
 import os
-
+import YAMLObject
 
 widthy = 800
 heighty = 640
@@ -13,14 +13,15 @@ half_heighty = int(heighty / 2)
 
 DISPLAY = (widthy, heighty)
 
-levels = list()
+#levels = list()
+chunks = list()
 
 tileset_images = list()
 tileset_block_width = 32
 tileset_block_height = 32
 
-platforms = None
-entities = None
+materials = None
+visibles = None
 level_index = 0
 player = None
 camera = None
@@ -34,70 +35,17 @@ def goto_level(dest_level_index, from_index = None, is_door = True):
             door_wood_open_sound.play()
     load_level(levels[dest_level_index], dest_level_index, from_index, is_door)
 
-def load_level(level, as_index, from_index = None, is_door = True):
-    if is_door:
-        if door_wood_close_sound is not None:
-            door_wood_close_sound.play()
-    # build the level
-    global platforms, entities, player, camera, minimap_surface
-    global minimap_block_size, level_index, is_first_spawn
-    while len(platforms) > 0: platforms.pop()
-    entities.empty()
-    x = y = 0
-    rows = cols = 0
-    player.xvel = 0
-    player.yvel = 0
-    for row in level:
-        cols = 0
-        for col in row:
-            if col == "P":
-                p = Platform(x, y)
-                platforms.append(p)
-                entities.add(p)
-            elif col == "E":
-                e = ExitBlock(x, y)
-                e.event_index = as_index + 1
-                platforms.append(e)
-                entities.add(e)
-                if from_index is not None:
-                    if from_index > as_index:
-                        player.rect.left = x - player.rect.width - 1
-            elif col == "B":
-                e = ExitBlock(x, y)
-                e.event_index = as_index - 1
-                platforms.append(e)
-                entities.add(e)
-                if from_index is not None:
-                    if from_index < as_index:
-                        player.rect.left = x + 32 + 1
-            x += 32
-            cols += 1
-        y += 32
-        rows += 1
-        x = 0
-
-    total_level_width  = len(level[0])*32
-    total_level_height = len(level)*32
-    minimap_surface = Surface((cols*minimap_block_size[0], rows*minimap_block_size[1]))
-    minimap_surface.convert()
-    camera = Camera(simple_camera, total_level_width, total_level_height)
-    entities.add(player)
-    level_index = as_index
-    #print("loaded level "+str(level_index)+" {"
-    #    +"cols:"+str(cols)+"; "
-    #    +"rows:"+str(rows)+"; "
-    #    +"total_level_width:"+str(total_level_width)+"; "
-    #    +"total_level_height:"+str(total_level_height)+"; "
-    #    +"}")
+def load_chunk(path):
+    
 
 def main():
     global cameraX, cameraY, screen, dead, levels
-    global entities, platforms, level_index, player, camera, tileset_images
+    global visibles, materials, level_index, player, camera, tileset_images
     global minimap_surface, minimap_block_size
     global door_wood_open_sound, door_wood_close_sound
     pygame.init()
     screen = pygame.display.set_mode(DISPLAY)
-    timer = pygame.time.Clock()
+    clock = pygame.time.Clock()
     pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
     try:
         pygame.mixer.music.load(os.path.join('data',"117818__oatmealcrunch__a2backw.ogg"))
@@ -112,9 +60,9 @@ def main():
     bg = Surface((32,32))
     bg.convert()
     bg.fill(Color("#3090C7"))
-    entities = pygame.sprite.Group()
+    visibles = pygame.sprite.Group()
     player = Player(64, 64)
-    platforms = []
+    materials = []
 
     tileset_image = pygame.image.load(os.path.join('data',"DungeonCrawl_ProjectUtumnoTileset.png"))
     tileset_image.convert_alpha()
@@ -177,7 +125,6 @@ def main():
     
     playing = True
     while playing:
-        #timer.tick(60)
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 #pygame.quit()
@@ -219,7 +166,7 @@ def main():
         camera.update(player)
 
         # update player, draw everything else
-        activate_event = player.update(up, down, left, right, running, platforms)
+        activate_event = player.update(up, down, left, right, running, materials)
         if activate_event >= 0:
             if activate_event == 0:
                 goto_level(0, from_index = level_index)
@@ -227,12 +174,12 @@ def main():
                 goto_level(1, from_index = level_index)
             else:
                 print("unknown event "+str(activate_event))
-        for e in entities:
+        for e in visibles:
             screen.blit(e.image, camera.apply(e))
         if minimap_surface is not None:
             #minimap_surface.fill((0,0,0,0))
             minimap_surface.fill((0,0,0,0))
-            for e in entities:
+            for e in visibles:
                 col=int(e.rect.left/32)
                 row=int(e.rect.top/32)
                 minimap_surface.fill((255,255,255,255),((col*minimap_block_size[0], row*minimap_block_size[1]),(minimap_block_size[0],minimap_block_size[1])))
@@ -243,7 +190,7 @@ def main():
             print("Missing minimap surface")
 
         #pygame.display.update()
-        timer.tick(60)
+        clock.tick(60)
         pygame.display.flip()
     print("finished main")
     
@@ -323,6 +270,7 @@ def point_is_in_rect(x, y, rect):
                 result = True
     return result
 collide_count = 0
+
 class Player(Entity):
     def __init__(self, x, y):
         Entity.__init__(self)
@@ -338,7 +286,7 @@ class Player(Entity):
         self.rect = self.image.get_rect()
         self.rect = Rect(x, y, 64, 64)
 
-    def update(self, up, down, left, right, running, platforms):
+    def update(self, up, down, left, right, running, materials):
         activate_event = -1
         if up:
             # only jump if on the ground
@@ -363,7 +311,7 @@ class Player(Entity):
         # increment in x direction
         self.rect.left += self.xvel
         # do x-axis collisions
-        result = self.collide(self.xvel, 0, platforms)
+        result = self.collide(self.xvel, 0, materials)
         if result >= 0:
             activate_event = result
         # increment in y direction
@@ -371,15 +319,15 @@ class Player(Entity):
         # assuming we're in the air
         self.onGround = False;
         # do y-axis collisions
-        result = self.collide(0, self.yvel, platforms)
+        result = self.collide(0, self.yvel, materials)
         if result >= 0:
             activate_event = result
         return activate_event
 
-    def collide(self, xvel, yvel, platforms):
+    def collide(self, xvel, yvel, materials):
         global collide_count
         activate_event = -1
-        for p in platforms:
+        for p in materials:
             if p.event_index is not None:
                 if xvel > 0:
                     try_x = self.rect.right + 1
@@ -417,28 +365,6 @@ class Player(Entity):
                 if yvel < 0:
                     self.rect.top = p.rect.bottom
         return activate_event
-
-
-class Platform(Entity):
-    def __init__(self, x, y):
-        Entity.__init__(self)
-        self.image = pygame.image.load(os.path.join('data',"block 4,18.png"))
-        self.image.convert_alpha()
-        #self.image.fill(Color("#DDDDDD"))
-        self.rect = Rect(x, y, 32, 32)
-
-    def update(self):
-        pass
-
-class ExitBlock(Platform):
-    def __init__(self, x, y):
-        Platform.__init__(self, x, y)
-        #tileset_images[1].
-        self.image = Surface((32,32))
-        self.image.convert_alpha()
-        #NOTE: coordinates start at 0,0 for first block in tileset image
-        self.image.blit(tileset_images[0], (-23*tileset_block_width, -11*tileset_block_height))
-        #self.image.fill(Color("#0033FF"))
 
 if __name__ == "__main__":
     main()

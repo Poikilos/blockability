@@ -1,0 +1,76 @@
+class ExitBlock(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        #tileset_images[1].
+        self.image = Surface((32,32))
+        self.image.convert_alpha()
+        #NOTE: coordinates start at 0,0 for first block in tileset image
+        self.image.blit(tileset_images[0], (-23*tileset_block_width, -11*tileset_block_height))
+        #self.image.fill(Color("#0033FF"))
+
+class Platform(Entity):
+    def __init__(self, x, y):
+        Entity.__init__(self)
+        self.image = pygame.image.load(os.path.join('data',"block 4,18.png"))
+        self.image.convert_alpha()
+        #self.image.fill(Color("#DDDDDD"))
+        self.rect = Rect(x, y, 32, 32)
+
+    def update(self):
+        pass
+
+def load_level(level, as_index, from_index = None, is_door = True):
+    if is_door:
+        if door_wood_close_sound is not None:
+            door_wood_close_sound.play()
+    # build the level
+    global materials, visibles, player, camera, minimap_surface
+    global minimap_block_size, level_index, is_first_spawn
+    while len(materials) > 0: materials.pop()
+    visibles.empty()
+    x = y = 0
+    rows = cols = 0
+    player.xvel = 0
+    player.yvel = 0
+    for row in level:
+        cols = 0
+        for col in row:
+            if col == "P":
+                p = Platform(x, y)
+                materials.append(p)
+                visibles.add(p)
+            elif col == "E":
+                e = ExitBlock(x, y)
+                e.event_index = as_index + 1
+                materials.append(e)
+                visibles.add(e)
+                if from_index is not None:
+                    if from_index > as_index:
+                        player.rect.left = x - player.rect.width - 1
+            elif col == "B":
+                e = ExitBlock(x, y)
+                e.event_index = as_index - 1
+                materials.append(e)
+                visibles.add(e)
+                if from_index is not None:
+                    if from_index < as_index:
+                        player.rect.left = x + 32 + 1
+            x += 32
+            cols += 1
+        y += 32
+        rows += 1
+        x = 0
+
+    total_level_width  = len(level[0])*32
+    total_level_height = len(level)*32
+    minimap_surface = Surface((cols*minimap_block_size[0], rows*minimap_block_size[1]))
+    minimap_surface.convert()
+    camera = Camera(simple_camera, total_level_width, total_level_height)
+    visibles.add(player)
+    level_index = as_index
+    #print("loaded level "+str(level_index)+" {"
+    #    +"cols:"+str(cols)+"; "
+    #    +"rows:"+str(rows)+"; "
+    #    +"total_level_width:"+str(total_level_width)+"; "
+    #    +"total_level_height:"+str(total_level_height)+"; "
+    #    +"}")

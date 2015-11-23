@@ -1,0 +1,4 @@
+tilesetImage: DungeonCrawl_ProjectUtumnoTileset.png
+name: Ice
+location: (56,15)
+properties: [solid,slippery]
