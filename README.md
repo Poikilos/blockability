@@ -1,9 +1,50 @@
 # Blockability
-A Pygame block engine with linear exploration (a work in progress).
+A Pygame block-based game engine with nonlinear exploration and persistent world (a work in progress).
+
+
+## How-to program:
+* Make a file like "example.py": make a subclass of BAGame, define run inside of it, then in main, make an instance of it (param is data_path), then call the run method.
+
+## "Story" format spec
+* Universal yml variables:
+	all in-game pos variables should be cartesian (pos values in yml files should be ALREADY be flipped as written to YAML since they are referring to chunk layout image pixels)
+	pos is always position coordinates (usually a list with 2 elements for 2D, but can be 3 if needed)
+		(divided by chunk_size in chunks.yml)
+	world is always a universal worldname
+	crop (used only for tileset and frame yml files): left,top,width,height
+		cell_crop is used similarly, and is for tilesets with padding: for example, if cell_crop is 4,4,34,34 that will be the rect for the first cell, then the rect for the second cell (block cell 1,0) will automatically be 42,42,34,34 which comes from 4+4+34,4+4+34,34,34 (4 since 0 to 3 includes 4 pixels being skipped between each cell rect, and each cell including padding takes up 38x38)
+	image_path: always relative to _images_path
+* A story is stored in _data_path (Stories can share resources if you manually change paths, such as game._images_path, after you make an instance of BAGame subclass but before you call the run method)
+	* A save (folder generally called state from here on) is stored as a state in data/states
+	* The conditions for the beginning of the game is stored as a state called "(start)"
+	* All images are stored in _images_path (usually data/images folder)
+	* each WORLD for the game (story) are stored in state/worlds
+	* When game is saved, states/(start) is never modified--it is instead copied fully to a new folder in states, numbered starting at 0 with state.yml containing name
+	* Chunks folder in WORLD contains the chunks, and chunks.yml which defines:
+		block_size: width, comma, height, in number of pixels (blocks should be stretched to this size) -- if 3D, this should be meters (opengl units)
+		chunk_size: width, comma, height, in number of blocks
+	* Each CHUNK of the world is saved in a folder by chunk coordinates (for example, if chunk_size is 64,64, then chunk folder named 2,1 would start at block 128,64)
+	* The world (made of blocks) layout is saved in each chunk of WORLD/chunks
+	* Blocks (block types) are defined in data/blocks (and used in state/chunk)
+		* There is a maximum of (256*256*256) block types, since chunk layouts are stored as images where color is block
+	* All players are stored in state/players (only local folders have parenthesis, such as "(1)" for local player 1)
+		* world: the world where to place the camera
+		* pos: the camera position
+	* All characters for the game are defined in state/characters
+		* location: is required for player's character if there is a player character
+		* owner: who owns the character
+	* Sprites are stored in yml files in data/sprites folder and all poses are references frame yml files (".yml" will be appended) in frames folder (multiple frame yml files can use same image, each with a different crop variable [or no crop variable] if needed)
+	* Frames are stored in yml files in frames folder, and image_path is relative to data/images
+	* Sprites can only reference frame yml files, while worlds can only reference blocks (blocks reference tilesets, so a world can reference multiple tilesets, whereas a tileset can only reference one image)
+
 
 ## Known issues
 * jumping downward into door can cause falling back out but warping to next room, causing you to fall through bottom of world
-	
+* should generate and show credits automatically: pre_credits.txt, then <name>-CREDITS.txt for each <name> (file or folder) in data_path (recursively), then post_credits.txt
+	* IF a line starts with "notify:" then do not display that part (only the rest of the line). Instead, notify the author of use using that information.
+	* IF a line starts with "notified:" then do not display that entire line (it is just for keeping record of when [and how if desired] notified)
+
+
 ## Differences from Platformy
 * All changes since initial commit are original to blockability. Initial commit was an upload of Platformy, for tracking changes from version that was the basis of the fork.
 * Platformy all-inclusive feature list: 1-color blocks (gray blocks, blue background, blue door), gravity, pygame-based hit detection, sys.exit() & pygame quit on door, 1-frame non-alpha sprite player character, two types of Blocks: P for platform, E for exit.

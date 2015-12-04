@@ -1,0 +1,57 @@
+YAMLObject_fromCodeConverter.py
+  custom_types:
+    YAMLObject
+  symbols:
+      YAMLObject._Name  # = (no value specified)  # from line 39
+      YAMLObject._Value  # = (no value specified)  # from line 40
+      YAMLObject._arrayValues  # = (no value specified)  # from line 41
+      YAMLObject._namedSubObjects  # = (no value specified)  # from line 42
+      int YAMLObject._depthCount  # = (no value specified)  # from line 43
+      int YAMLObject._indentCount  # = (no value specified)  # from line 44
+      int YAMLObject._whitespaceCount  # = (no value specified)  # from line 45
+      string YAMLObject._whitespaceString  # = (no value specified)  # from line 46
+      int YAMLObject._lineIndex  # = (no value specified)  # from line 47
+      YAMLObject._parent  # = (no value specified)  # from line 48
+      YAMLObject._thisYAMLSyntaxErrors  # = (no value specified)  # from line 49
+      YAMLObject._IsVerbose  # = (no value specified)  # from line 50
+      string YAMLObject._indentDefaultString  # = (no value specified)  # from line 51
+      YAMLObject._Name  # = (no value specified)  # from line 56
+      YAMLObject._Value  # = (no value specified)  # from line 57
+      YAMLObject._parent  # = (no value specified)  # from line 58
+      staticmethod YAMLObject.getLines =  staticmethod(getLines)  # from line 268
+      staticmethod YAMLObject.addVerboseSyntaxMessage =  staticmethod(addVerboseSyntaxMessage)  # from line 305
+      staticmethod YAMLObject.getYAMLObject =  staticmethod(getYAMLObject)  # from line 424
+      staticmethod YAMLObject.getIndent =  staticmethod(getIndent)  # from line 548
+      staticmethod YAMLObject.ValueToCSharp =  staticmethod(ValueToCSharp)  # from line 572
+  functions:
+      YAMLObject.__init__
+      YAMLObject.getFullName
+      YAMLObject.getFullNameRecursive_DontCallMeDirectly
+      YAMLObject.setValue
+      YAMLObject.getObject
+      YAMLObject.createObject
+      YAMLObject.addArrayValue
+      YAMLObject.isArray
+      YAMLObject.getSubValue
+      YAMLObject.getValue
+      YAMLObject.getSubTrees
+      YAMLObject.getArrayValues
+      YAMLObject.addSub
+      YAMLObject.isLeaf
+      YAMLObject.isRoot
+      YAMLObject.getLines
+      YAMLObject.deqErrorsInYAMLSyntax
+      YAMLObject.getAncestorWithIndent
+      YAMLObject.addVerboseSyntaxMessage
+      YAMLObject.getArrayValueCount
+      YAMLObject.getYAMLObject
+      YAMLObject.loadYAMLLines
+      YAMLObject.loadYAML
+      YAMLObject.saveYAMLSelf
+      YAMLObject.getDebugNounString
+      YAMLObject.saveYAML
+      YAMLObject.getIndent
+      YAMLObject.getMyIndent
+      YAMLObject.getMyRealIndent
+      YAMLObject.getMyRealIndentCount_Recursive
+      YAMLObject.ValueToCSharp

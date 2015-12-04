@@ -1,0 +1,5 @@
+"recolor-all-the-items" by PriorBlue is based on artwork from:
+the "420 pixel art icons" from 7Souls (http://7soul1.deviantart.com/?rnrd=74632),
+"32x32 Fantasy Tileset" from Jerom (http://opengameart.org/content/32x32-fantasy-tileset).
+and "Crawl Tiles" from Dungeon Crawl Stone Soup (https://code.google.com/p/crawl-tiles/)
+using DAWNBRINGER's 16 Color Palette v1.0

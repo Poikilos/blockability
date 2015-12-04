@@ -1,10 +1,7 @@
-
-import pygame
-from pygame import *
 import sys
 import os
 import YAMLObject
-
+game = None
 widthy = 800
 heighty = 640
 dead = False
@@ -12,6 +9,27 @@ half_widthy = int(widthy / 2)
 half_heighty = int(heighty / 2)
 
 DISPLAY = (widthy, heighty)
+
+class BABlock:
+    tileset_path = None
+    name = None
+    tileset_cell_loc = None
+    properties = None
+    gravity_vec = None
+    yo = None
+    def __init__(self):
+        pass
+    
+    def load_yml(yml_path):
+        self.yo = YAMLObject()
+        self.yo.loadYAML(yml_path)
+        
+
+class BAChunk:
+    top_right_global_pos = None
+    
+    def __init__(self):
+        self.top_right_global_pos = (0,0)
 
 #levels = list()
 chunks = list()
@@ -29,24 +47,76 @@ minimap_block_size = (3.0, 3.0)
 door_wood_open_sound = None
 door_wood_close_sound = None
 
-def goto_level(dest_level_index, from_index = None, is_door = True):
-    if is_door:
-        if door_wood_open_sound is not None:
-            door_wood_open_sound.play()
-    load_level(levels[dest_level_index], dest_level_index, from_index, is_door)
+#def goto_level(dest_level_index, from_index = None, is_door = True):
+#    if is_door:
+#        if door_wood_open_sound is not None:
+#            door_wood_open_sound.play()
+#    load_level(levels[dest_level_index], dest_level_index, from_index, is_door)
+world = None
 
-def load_chunk(path):
+def warp(chunk_index, pos):
+    load_chunk(chunk_index)
+    set_player_pos(pos)
+
+
+
+class BAGame:
+    _players = list()
+    _data_path = None
+    _blocks = 
+    _worlds = list()
+    _images_path = None
+    _tilesets_path = None
     
+    def __init__(self, data_path, images_path):
+        self._data_path = data_path
+        self._images_path = os.path.join(self._data_path,"images")
+        self._worlds_path = os.path.join(self._data_path, "worlds")
+        self._tilesets_path = os.path.join(self._data_path, "tilesets")
+        #NOTE: world name should be changed later (normally using load_world)
+    
+class BAWorld:
+    name = None
+    camera = None
+    _data_path = None
+    _story = None
+
+    _world_path = None
+    _chunks_path = None
+    _block_size = None
+    
+    def __init__(self, bgame):
+        global world_luid
+        self._data_path = data_path  #os.path.join(".","data")
+        self._worlds_path = os.path.join(self._data_path, "worlds")
+        #NOTE: world name should be changed later (normally using load_world)
+        self.name = "story"+str(story_luid)
+        story_luid += 1
+    
+    def _load_world(self, name):
+        self.name = name
+        self._world_path = os.path.join(self._worlds_path, name)
+        self._chunks_path = os.path.join(self._world_path, "chunks")
+    
+    def _load_chunk_at(pos):
+        #can accept a float pos (whole number is block location)
+        block_pos = (int(pos[0]), int(pos[1]))
+        chunk_loc = (block_pos[0]/self._block_size, block_pos[1]/self._block_size)
+        self._load_chunk_folder(os.path.join(self._chunks_path, str(chunk_loc[0])+","+str(chunk_loc[1]))
+        
+    def _load_chunk_folder(folder_path):
+        yml_path = os.path.join(folder_path, "chunk.yml")
+
+    def set_player_pos(pos):
+        if player is not None:
+            if player.sprite is not None:
+                player.sprite.set_position(pos)
 
 def main():
     global cameraX, cameraY, screen, dead, levels
     global visibles, materials, level_index, player, camera, tileset_images
     global minimap_surface, minimap_block_size
     global door_wood_open_sound, door_wood_close_sound
-    pygame.init()
-    screen = pygame.display.set_mode(DISPLAY)
-    clock = pygame.time.Clock()
-    pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
     try:
         pygame.mixer.music.load(os.path.join('data',"117818__oatmealcrunch__a2backw.ogg"))
         pygame.mixer.music.play(-1)
@@ -245,15 +315,15 @@ def simple_camera(camera, target_rect):
     return Rect(-l+half_widthy, -t+half_heighty, w, h)
 
 #functions to ensure we don't scroll outside of level.
-def complex_camera(camera, target_rect):
-    l, t, _, _ = target_rect
-    _, _, w, h = camera
-    l, t, _, _ = -l+half_widthy, -t+half_heighty, w, h
-    l = min(0, l)                        # stop scrolling at the left edge
-    l = max(-(camera.width-widthy), l)   # stop scrolling at the right edge
-    t = max(-(camera.height-heighty), t) # stop scrolling at the bottom
-    t = min(0, t)                        # stop scrolling at the top
-    return Rect(l, t, w, h)
+#def complex_camera(camera, target_rect):
+#    l, t, _, _ = target_rect
+#    _, _, w, h = camera
+#    l, t, _, _ = -l+half_widthy, -t+half_heighty, w, h
+#    l = min(0, l)                        # stop scrolling at the left edge
+#    l = max(-(camera.width-widthy), l)   # stop scrolling at the right edge
+#    t = max(-(camera.height-heighty), t) # stop scrolling at the bottom
+#    t = min(0, t)                        # stop scrolling at the top
+#    return Rect(l, t, w, h)
 
 class Entity(pygame.sprite.Sprite):
     nav_color = None
@@ -366,5 +436,3 @@ class Player(Entity):
                     self.rect.top = p.rect.bottom
         return activate_event
 
-if __name__ == "__main__":
-    main()

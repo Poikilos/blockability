@@ -1,0 +1,4 @@
+tileset_path: DungeonCrawl_ProjectUtumnoTileset.png
+name: "Door, Wooden"
+tileset_cell_loc_list: [(23,11)]
+properties: [solid]

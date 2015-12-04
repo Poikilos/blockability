@@ -1,5 +1,5 @@
 ﻿# 
-# Processed by PythonCodeTranslators https://github.com/expertmm/PythonCodeTranslators2015-11-30 16:51:01
+# Processed by PythonCodeTranslators https://github.com/expertmm/PythonCodeTranslators2015-11-30 11:08:58
 import sys
 # * Created by SharpDevelop.
 # * User: jgustafson
@@ -24,7 +24,7 @@ import sys
 #       public int lineType=0;
 #       public int lineIndex=-1;//for debugging only--line of file
 #   }
-class YAMLObject:
+class YAMLObject(object):
     """ <summary>
      YAMLObject. The first YAMLObject object is the root (one where you call load).
      Other YAMLObject can be either:
