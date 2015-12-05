@@ -34,12 +34,9 @@ class BAWidgetProgram:
         self.trunk_widget = BAWidget("trunk", pygame.Rect(0,0,display_size[0],display_size[1]), None)
 
 class BAWidget:
-    LEFT_INDEX = 0
-    TOP_INDEX = 1
-    RIGHT_INDEX = 2
-    BOTTOM_INDEX = 3
     rect = None
-    orientation = None
+    size = None
+    align = None
     subwidgets = None
     form = None
     result = None
@@ -47,7 +44,7 @@ class BAWidget:
     handler = None
     last_clicked_key = None
     image = None
-    _text = None
+    text = None
     name = None
     index = None
     key = None
@@ -55,142 +52,36 @@ class BAWidget:
     file_count = None
     kind = None
     value = None
-    #last_x = 0
-    #last_y = 0
+    last_x = 0
+    last_y = 0
     listing_path = None
     desired_target = None
     enabled = None
     margin = None
     padding = None
     background_color = None
-    color = None
-    _text_rect = None
-    _is_layout_suspended = None
-    
-    def suspend_layout(self):
-        self._is_layout_suspended = True
-        
-    def resume_layout(self):
-        self._is_layout_suspended = False
-        self.regenerat()
     
     def add_widget(self, subwidget_widget):
-        if isinstance(subwidget_widget,BAWidget):
+        if isinstance(subwidget_widget, BAWidget):
             subwidget_widget.index = len(self.subwidgets)
             self.subwidgets.append(subwidget_widget)
             subwidget_widget.container = self
-            if _is_layout_suspended is False:
-                self.rect = self.get_autosize()
-                self.regenerate()
-                self.layout()
         else:
-            print("ERROR: non-widget sent to add_widget, so nothing done.")
+            print("ERROR: non-widget sent to add_widget, so nothing done.") 
     
-    def get_autosize_width_padded(self):
-        result = 0
-        is_orientation_ok = True
-        left_margin = 0
-        right_margin = 0
-        if self.margin is not None:
-            left_margin = self.margin[BAWidget.LEFT_INDEX]
-            right_margin = self.margin[BAWidget.RIGHT_INDEX]
-        if self.subwidgets is not None:
-            for this_widget in self.subwidgets:
-                widget_width_plus_margin = left_margin + this_widget.get_width_padded() + right_margin
-                if self.orientation == 'horizontal':
-                    width += widget_width_plus_margin
-                elif self.orientation == 'vertical':
-                    if widget_width_plus_margin > width:
-                        width = widget_width_plus_margin
-                else:
-                    is_orientation_ok = False
-        if not is_orientation_ok:
-            print("ERROR in widget named '"+str(self.name)+"': orientation '"+str(this.orientation)+"' is not known")
-        empty_span = 0
-        if self.rect is not None:
-            empty_span += self.rect.width
-        if self.padding is not None:
-            empty_span += padding[BAWidget.LEFT_INDEX]+padding[BAWidget.RIGHT_INDEX]
-        if empty_span > result:
-            result = empty_span
-        return result
-
-    def get_autosize_height_padded(self):
-        result = 0
-        is_orientation_ok = True
-        top_margin = 0
-        bottom_margin = 0
-        if self.margin is not None:
-            top_margin = self.margin[BAWidget.TOP_INDEX]
-            bottom_margin = self.margin[BAWidget.BOTTOM_INDEX]
-        if self.subwidgets is not None:
-            for this_widget in self.subwidgets:
-                widget_width_plus_margin = top_margin + this_widget.get_width_padded() + bottom_margin
-                if self.orientation == 'horizontal':
-                    width += widget_width_plus_margin
-                elif self.orientation == 'vertical':
-                    if widget_width_plus_margin > width:
-                        width = widget_width_plus_margin
-                else:
-                    is_orientation_ok = False
-        if not is_orientation_ok:
-            print("ERROR in widget named '"+str(self.name)+"': orientation '"+str(this.orientation)+"' is not known")
-        empty_span = 0
-        if self.rect is not None:
-            empty_span += self.rect.width
-        if self.padding is not None:
-            empty_span += padding[BAWidget.TOP_INDEX]+padding[BAWidget.BOTTOM_INDEX]
-        if empty_span > result:
-            result = empty_span
-        return result
-        
-    def get_autosize(self):
-        width = 0
-        height = 0
-        is_orientation_ok = True
-        if self.subwidgets is not None:
-            for this_widget in self.subwidgets:
-                this_widget_rect = this_widget.get_autosize()
-                if self.orientation == 'horizontal':
-                    width += this_widget_rect.width
-                    if this_widget_rect.height > height:
-                        height = this_widget_rect.height
-                elif self.orientation == 'vertical':
-                    height += this_widget_rect.height
-                    if this_widget_rect.width > width:
-                        width = this_widget_rect.width
-                else:
-                    is_orientation_ok = False
-        if not is_orientation_ok:
-            print("ERROR in widget named '"+str(self.name)+"': orientation '"+str(this.orientation)+"' is not known")
-        if rect is not None:
-            if rect.width > width:
-                width = rect.width
-            if rect.height > height:
-                height = rect.height
-        return pygame.Rect(0,0,width,height)
-    
-    def __init__(self, name, rect, on_form, orientation='vertical', text=None):
+    def __init__(self, name, size, on_form):
         self.form = on_form
         self.name = name
+        self.size = size
         self.subwidgets = list()
         self.enabled = True
-        self.rect = pygame.Rect(rect.left, rect.top, rect.width, rect.height)
-        self.orientation = orientation
-        self.margin = (8,8,8,8)
-        self.padding = (8,8,8,8)
-        self.color = (192, 192, 192, 255)
-        self._text = text
-        self._is_layout_suspended = False
-        try:
-            self.image = pygame.Surface( (self.rect.width,self.rect.height) )
-        except:
-            print("Could not finish BAWidget surface with rect: "+str(self.rect))
-        self.regenerate()
-    
-    def set_text(self, text):
-        self._text = text
-        self.regenerate()
+        self.align = 'vertical'
+        self.margin = (.01, .01, .01, .01)
+        self.padding = (.01, .01, .01, .01)
+        #try:
+        #    self.image = pygame.Surface( (self.rect.width,self.rect.height) )
+        #except:
+        #    print("Could not finish BAWidget surface with rect: "+str(self.rect))
     
     def set_form_list_path_to_key(self):
         if self.container is not None:
@@ -226,28 +117,25 @@ class BAWidget:
                 self.set_ok_enabled(False)
         return is_ok_target
     
-    def regenerate(self):
-        if self.image is not None and self.background_color is not None:
-            self.image.fill( self.background_color )
-        if self._text is not None and self.color is not None:
-            self.text_image = program.font.render( self._text, program.antialias, self.color)
-            self.text_rect = self.text_image.get_rect()
-            self.image.blit( text_image, ((self.rect.width-self.text_rect.width)/2,(self.rect.height-self.text_rect.height)/2) )
         
     def set_ok_enabled(self,set_is_enabled):
+        
         this_button = self.get_subwidget_by_key("ok")
         if this_button is not None:
             this_button.enabled = set_is_enabled
             text_image = None
             if set_is_enabled:
-                this_button.background_color = (128,128,192,255)
-                this_button.color = (0,0,0,128)
+                this_button.image.fill( (128,128,192,255) )
+                text_image = program.font.render( this_button.text, program.antialias, (0,0,0,128))
             else:
                 this_button.image.fill( (128,128,128,255) )
-                this_button.color = (192,192,192,128)
-            this_button.regenerate()
+                text_image = program.font.render( this_button.text, program.antialias, (192,192,192,128))
+            text_rect = text_image.get_rect()
+            this_button.image.blit( text_image, ((this_button.rect.width-text_rect.width)/2,(this_button.rect.height-text_rect.height)/2) )
+
+            
         else:
-            print("no ok button in "+self.name+" which contains:")
+            print("no ok button in "+self.name+":")
             for sub in self.subwidgets:
                 print("  - "+str(sub.key)+":"+str(sub.name))
     
@@ -256,10 +144,10 @@ class BAWidget:
             if self.key is not None:
                 self.form.set_last_clicked_key(self.key)
             else:
-                self.form.set_last_clicked_key(self._text)
+                self.form.set_last_clicked_key(self.text)
             #print("set form last clicked key:"+str(self.form.last_clicked_key))
             #print("  self.key:"+str(self.key))
-            #print("  self._text:"+str(self._text))
+            #print("  self.text:"+str(self.text))
             
 
     def index_of_subwidget_by_kind(self, val):
@@ -276,14 +164,14 @@ class BAWidget:
         for index in range(0,len(self.subwidgets)):
             item = self.subwidgets[index]
             if is_case_sensitive:
-                if item._text is not None:
-                    if item._text == text:
+                if item.text is not None:
+                    if item.text == text:
                         result = index
                         break
             else:
                 text_lower = text.lower()
-                if item._text is not None:
-                    if item._text.lower() == text_lower:
+                if item.text is not None:
+                    if item.text.lower() == text_lower:
                         result = index
                         break
         return result
@@ -334,7 +222,7 @@ class BAWidget:
     
     def list_files(self, start_index = 0):
         self.clear_listitems()
-        #element_padding = 8
+        element_padding = 8
         dialog = self
         #dialog = None
         #dialog_index = self.index_of_subwidget_by_kind("dialog")
@@ -342,8 +230,8 @@ class BAWidget:
         #    dialog = self.subwidgets[dialog_index]
             
         if dialog is not None:
-            #self.last_x = dialog.rect.left+element_padding
-            #self.last_y = dialog.rect.top+element_padding
+            self.last_x = dialog.rect.left+element_padding
+            self.last_y = dialog.rect.top+element_padding
             any_button = self.get_subwidget_by_kind("button")
             buttons_top = program.display_size[1]
             if any_button is not None:
@@ -351,11 +239,11 @@ class BAWidget:
             else:
                 print("no buttons, so clipping file list to "+str(buttons_top))
             
-            #list_rect = pygame.Rect(0, 0, dialog.rect.width-element_padding*2, buttons_top-self.last_y-element_padding)
-            files_widget = BAWidget("files_widget", list_rect, dialog)
-            files_widget.image.background_color = (255,255,255,255)
-            files_widget.regenerate()
-            dialog.add_widget(files_widget)
+            #list_rect = pygame.Rect(self.last_x, self.last_y, dialog.rect.width-element_padding*2, buttons_top-self.last_y-element_padding)
+            files_widget = BAWidget("files_widget", (1.0,.8), dialog)
+            files_widget.background_color = (1.0,1.0,1.0,1.0)
+            #files_widget.image.fill( (255,255,255,255) )
+            #dialog.add_widget(files_widget)
             file_index = 0
             parent_dir_path = "."
             if (self.listing_path is not None):
@@ -368,77 +256,63 @@ class BAWidget:
             if (start_index is None) or (start_index<=0):
                 is_start = True
             if not is_start:
-                this_widget = BAWidget("scroll_back", pygame.Rect(0, 0, this_image_rect.width, this_image_rect.height), dialog)
-                this_widget.color = (128,128,128,255)
-                this_widget.margin = (0,0,0,0)
-                this_widget.padding = (0,1,0,0)
-                this_widget.set_text("«")
-                this_widget.key = "«"
+                this_image = program.font.render( "«", program.antialias, (128,128,128,255))
+                this_image_rect = this_image.get_rect()
+                this_widget = BAWidget("«", pygame.Rect(self.last_x, self.last_y, this_image_rect.width, this_image_rect.height),dialog)
+                this_widget.key="<"
                 back_widget = this_widget
                 this_widget.handler = this_widget.form_list_files_starting_at_value
+                this_widget.image = this_image
                 this_widget.kind = "listitem"
                 dialog.add_widget(this_widget)
-            #self.last_y += slot_height
+            self.last_y += slot_height
             is_end = True
             filename_list = [".."]+os.listdir(parent_dir_path)
             file_count = 0
-            #slots_height = list_rect.bottom - self.last_y
+            slots_height = list_rect.bottom - self.last_y
             slots_count = int(slots_height/slot_height)
-            #files_widget.suspend_layout()
-            max_filename_count = 10
             for filename in filename_list:
                 if file_index >= start_index:
                     display_text = filename
                     file_fullname = os.path.abspath(os.path.join(parent_dir_path,filename))
                     if os.path.isdir(file_fullname):
                         display_text = "["+filename+"]"
-                    this_widget = BAWidget("file"+str(file_index), pygame.Rect(0, 0, this_image_rect.width, this_image_rect.height),dialog)
-                    this_widget.color = (128,128,128,255)
-                    this_widget.margin = (0,0,0,0)
-                    this_widget.padding = (0,1,0,0)
-                    this_widget.set_text(display_text)
-                    #this_image_rect = this_image.get_rect()
-                    #this_widget.set_text(filename)
-                    this_widget.key = file_fullname
+                    this_image = program.font.render( display_text, program.antialias, (128,128,128,255))
+                    this_image_rect = this_image.get_rect()
+                    file_widget = BAWidget("file"+str(file_index), pygame.Rect(self.last_x, self.last_y, this_image_rect.width, this_image_rect.height),dialog)
+                    file_widget.text = filename
+                    file_widget.key = file_fullname
                     #if filename == "..":
-                    #    this_widget.key = parent_dir_path
-                    this_widget.handler = this_widget.set_form_last_clicked_to_key
+                    #    file_widget.key = parent_dir_path
+                    file_widget.handler = file_widget.set_form_last_clicked_to_key
                     #if os.path.isdir(file_fullname):
-                    #    this_widget.handler = this_widget.set_form_list_path_to_key
+                    #    file_widget.handler = file_widget.set_form_list_path_to_key
                     #elif os.path.isfile(file_fullname):
-                    #    this_widget.handler = this_widget.set_form_last_clicked_to_key
-                    #this_widget.image = this_image
-                    this_widget.kind = "listitem"
-                    files_widget.add_widget(this_widget)
-                    #self.last_y += slot_height
+                    #    file_widget.handler = file_widget.set_form_last_clicked_to_key
+                    file_widget.image = this_image
+                    file_widget.kind = "listitem"
+                    dialog.add_widget(file_widget)
+                    self.last_y += slot_height
                     file_count += 1
-                    #if self.last_y + this_image_rect.height >= list_rect.bottom:
-                    if file_count >= max_filename_count:
+                    if self.last_y + this_image_rect.height >= list_rect.bottom:
                         if file_index < len(filename_list):
                             is_end = False
                         file_index += 1
                         break
                 file_index += 1
-            #files_widget.resume_layout()
             if back_widget is not None:
                 back_widget.value = file_index - slots_count*2
             if not is_end:
-                this_widget = BAWidget("scroll_forward", pygame.Rect(0, 0, this_image_rect.width, this_image_rect.height),dialog)
-                this_widget.color = (128,128,128,255)
-                this_widget.margin = (0,0,0,0)
-                this_widget.padding = (0,1,0,0)
-                this_widget.set_text("»")
-                this_widget.key = "»"
-                
-                #this_image = program.font.render( "»", program.antialias, (128,128,128,255))
-                #this_image_rect = this_image.get_rect()
-                #this_widget.key="»"
+                this_image = program.font.render( "»", program.antialias, (128,128,128,255))
+                this_image_rect = this_image.get_rect()
+                this_widget = BAWidget("»", pygame.Rect(self.last_x, self.last_y, this_image_rect.width, this_image_rect.height),dialog)
+                this_widget.key="»"
                 this_widget.value = file_index
                 this_widget.handler = this_widget.form_list_files_starting_at_value
-                #this_widget.image = this_image
+                this_widget.image = this_image
                 this_widget.kind = "listitem"
                 dialog.add_widget(this_widget)
-                #self.last_y += this_image_rect.height
+                self.last_y += this_image_rect.height
         else:
             print("Could not finish list_files: dialog is not present")
 
@@ -447,10 +321,10 @@ class BAWidget:
             #if self.key is not None:
             #    self.container.result = self.key
             #else:
-            #ALWAYS set result to self._text, so result is predictable
+            #ALWAYS set result to self.text, so result is predictable
             # from the standpoint of the person using the API
             # [key is automatically changed to ok if text.lower() is ok, open or save]
-            self.container.result = self._text
+            self.container.result = self.text
 
     def remove_widget_by_index(self, subwidget_index):
         if self.subwidgets is not None:
@@ -463,10 +337,11 @@ class BAWidget:
             self.subwidgets[len(self.subwidgets)-1].remove_subwidgets()
             self.subwidgets.pop()
 
-def create_dialog(container, button_strings, element_strings, file_start_index = 0, file_prev_index = None):
-    width = container.rect.width/2
-    height = container.rect.height/2
-    dialog = BAWidget("dialog", pygame.Rect(width/2,height/2,width,height), container)
+#formerly show_dialog
+def create_file_open_dialog(container, button_strings, element_strings, file_start_index = 0, file_prev_index = None):
+    #width = container.rect.width/2
+    #height = container.rect.height/2
+    dialog = BAWidget("dialog", (.5,.5), container)
     dialog.kind = "dialog"
     dialog.image.fill((32,64,64,255))
     if container is not None:
@@ -481,39 +356,31 @@ def create_dialog(container, button_strings, element_strings, file_start_index =
         buttons_w += button_w
         if index != 0:
             buttons_w += button_spacing
-    #dialog.last_x = dialog.rect.left+int((dialog.rect.width-buttons_w)/2)
-    #dialog.last_y = int(dialog.rect.bottom-button_h-button_padding_bottom)
-    #buttons_top = dialog.last_y
-    is_ready = True
-    for element_string in element_strings:
-        if (element_string=="fileopener"):
-            label_widget = BAWidget("label_widget", pygame.Rect(0,0,100,20), on_form=dialog, text="Choose a file:")
-            dialog.add_widget(label_widget)
-            dialog.desired_target = "file"
-            dialog.list_files()
-            is_ready = False
-    #container.last_x = dialog.last_x
-    #container.last_y = dialog.last_y
-
-    buttons_layout_w = BAWidget("buttons_layout_w", pygame.Rect(0,0,len(button_strings)*button_w+80,30), on_form=dialog, orientation='horizontal')
+    dialog.last_x = dialog.rect.left+int((dialog.rect.width-buttons_w)/2)
+    dialog.last_y = int(dialog.rect.bottom-button_h-button_padding_bottom)
+    buttons_top = dialog.last_y
     for index in range(0,len(button_strings)):
         button_string = button_strings[index]
-        this_button = BAWidget(button_string+"Button", pygame.Rect(0,0,button_w,button_h), dialog, text=button_string)
-        this_button.background_color = (128,192,192,255)
+        this_button = BAWidget(button_string+"Button", pygame.Rect(dialog.last_x,dialog.last_y,button_w,button_h), dialog)
+        this_button.image.fill( (128,192,192,255) )
         this_button.kind = "button"
         if (button_string.lower() == "ok") or (button_string.lower() == "open") or (button_string.lower() == "save"):
             this_button.key = "ok"
-        this_button.color(0,0,0,128)
-        this_button.regenerate()
-        #text_image = program.font.render( button_string, program.antialias, (0,0,0,128))
-        #this_button._text = button_string
-        #text_rect = text_image.get_rect()
-        #this_button.image.blit( text_image, ((this_button.rect.width-text_rect.width)/2,(this_button.rect.height-text_rect.height)/2) )
+        text_image = program.font.render( button_string, program.antialias, (0,0,0,128))
+        this_button.text = button_string
+        text_rect = text_image.get_rect()
+        this_button.image.blit( text_image, ((this_button.rect.width-text_rect.width)/2,(this_button.rect.height-text_rect.height)/2) )
         this_button.handler = this_button.close_container
-        buttons_layout_w.add_widget(this_button)
-        #dialog.last_x += button_w + button_spacing
-    dialog.add_widget(buttons_layout_w)
-    dialog.set_ok_enabled(is_ready)
+        dialog.add_widget(this_button)
+        dialog.last_x += button_w + button_spacing
+    
+    for element_string in element_strings:
+        if (element_string=="fileopener"):
+            dialog.desired_target = "file"
+            dialog.list_files()
+            dialog.set_ok_enabled(False)
+    container.last_x = dialog.last_x
+    container.last_y = dialog.last_y
                 
     return dialog
     

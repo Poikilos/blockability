@@ -1,4 +1,3 @@
-cell_w:32
-cell_h:32
+cell_crop:0,0,32,32
 name: DungeonCrawl_ProjectUtumnoTileset
-image_file_name: DungeonCrawl_ProjectUtumnoTileset.png
+image_path: DungeonCrawl_ProjectUtumnoTileset.png

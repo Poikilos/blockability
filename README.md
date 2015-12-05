@@ -12,7 +12,7 @@ A Pygame block-based game engine with nonlinear exploration and persistent world
 		(divided by chunk_size in chunks.yml)
 	world is always a universal worldname
 	crop (used only for tileset and frame yml files): left,top,width,height
-		cell_crop is used similarly, and is for tilesets with padding: for example, if cell_crop is 4,4,34,34 that will be the rect for the first cell, then the rect for the second cell (block cell 1,0) will automatically be 42,42,34,34 which comes from 4+4+34,4+4+34,34,34 (4 since 0 to 3 includes 4 pixels being skipped between each cell rect, and each cell including padding takes up 38x38)
+		cell_crop is used similarly, and is for tilesets with padding: for example, if cell_crop is 4,4,34,34 that will be the rect for the first cell, then the rect for the second cell (block cell 1,0) will automatically be 38,38,34,34 which comes from 4+34,4+34,34,34 (4 since 0 to 3 includes 4 pixels being skipped between each cell rect, and each cell including padding takes up 38x38)
 	image_path: always relative to _images_path
 * A story is stored in _data_path (Stories can share resources if you manually change paths, such as game._images_path, after you make an instance of BAGame subclass but before you call the run method)
 	* A save (folder generally called state from here on) is stored as a state in data/states

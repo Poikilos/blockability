@@ -33,6 +33,17 @@ class BASpriteFramer(BAWidgetProgram):
         clock = pygame.time.Clock()
         mode = 'drawing'
         dialog = None
+        title_w = BAWidget("title_w", pygame.Rect(0,0,0,0), dialog, orientation='horizontal')
+        title_w.text = "(no game folder loaded)"
+        tabs_layout_w = BAWidget("tabs_layout_w", list_rect, self.trunk_widget, orientation='horizontal')
+        open_button_w = BAWidget("open_button_w", list_rect, self.trunk_widget)
+        open_button_w.text = "Open Game"
+        open_button_w.background_color = (64,64,64,255)
+        self.trunk_widget.add_widget(title_w)
+        self.trunk_widget.add_widget(open_button_w)
+        self.trunk_widget.add_widget(tabs_layout_w)
+        worlds_button = BAWidget("worlds_button", list_rect, self.trunk_widget, text="Worlds")
+        tabs_layout_w.add_widget(worlds_button)
         while playing:
             #for e in pygame.event.get():
             for event in [pygame.event.wait()]+pygame.event.get():
@@ -45,12 +56,12 @@ class BASpriteFramer(BAWidgetProgram):
                             mode = 'openimage'
                             dialog = show_dialog(self.trunk_widget,list(["Open","Cancel"]),list(["fileopener"]))
                 elif event.type == MOUSEBUTTONDOWN:
-                    if this_frame_image is None:
-                        set_status("opening image")
-                        #if mode!='openimage':
-                        if dialog is None:
-                            mode='openimage'
-                            dialog = show_dialog(self.trunk_widget,list(["Open","Cancel"]),list(["fileopener"]))
+                    #if this_frame_image is None:
+                    #    set_status("opening image")
+                    #    #if mode!='openimage':
+                    #    if dialog is None:
+                    #        mode='openimage'
+                    #        dialog = create_dialog(self.trunk_widget,list(["Open","Cancel"]),list(["fileopener"]))
                     clicked_widget = get_top_widget_at(self.trunk_widget, pygame.mouse.get_pos())
                     
                     if clicked_widget is not None:
