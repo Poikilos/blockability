@@ -58,8 +58,6 @@ def warp(chunk_index, pos):
     load_chunk(chunk_index)
     set_player_pos(pos)
 
-
-
 class BAGame:
     _players = list()
     _data_path = None

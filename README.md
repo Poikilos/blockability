@@ -1,9 +1,24 @@
 # Blockability
-A Pygame block-based game engine with nonlinear exploration and persistent world (a work in progress).
-
+Includes BAWidgets, which is a complete widget system (including one-line custom dialog box creation)--see baspriteframer for an example of using BAWidgets.
+Blockability is a block-based game engine specification with nonlinear exploration and persistent world. It can be implemented in pygame or any other engine. This project includes a pygame implementation of the spec (example is a work in progress).
 
 ## How-to program:
-* Make a file like "example.py": make a subclass of BAGame, define run inside of it, then in main, make an instance of it (param is data_path), then call the run method.
+* Make a file like "example.py": make a subclass of BAGame, define run inside of it, then in main, make an instance of it (param is data_path), then call the run method (see Known issues first).
+
+## Known issues
+* fix non-working example: deprecate main in blockability.py, and re-implement, splitting into BAGame.__init__ and TheMissingString(BAGame).run
+* (BAWidgets) Make listview generic, and only relist when necessary, and create pieces ahead of time (and clean up list_files code accordingly)
+* (BAWidgets) add "anchor" list member to BAWidget to allow better alignment of scrollbar buttons
+* (BAWidgets) add scrollbar between scrollbar buttons
+* (BAWidgets) valign is not fully tested
+* (BAWidgets) skinning for margin and padding is not implemented
+* (BAWidgets) get_top_widget_at gets button that made dialog appear if title of dialog is clicked
+* (BAWidgets) (make maximum filename length showable, then) use docking to avoid scroll_spacer_widget minimum_rect width being files_widget._minimum_rect.width-18
+* jumping downward into door can cause falling back out but warping to next room, causing you to fall through bottom of world
+* should generate and show credits automatically: pre_credits.txt, then <name>-CREDITS.txt for each <name> (file or folder) in data_path (recursively), then post_credits.txt
+	* IF a line starts with "notify:" then do not display that part (only the rest of the line). Instead, notify the author of use using that information.
+	* IF a line starts with "notified:" then do not display that entire line (it is just for keeping record of when [and how if desired] notified)
+
 
 ## "Story" format spec
 * Universal yml variables:
@@ -38,11 +53,6 @@ A Pygame block-based game engine with nonlinear exploration and persistent world
 	* Sprites can only reference frame yml files, while worlds can only reference blocks (blocks reference tilesets, so a world can reference multiple tilesets, whereas a tileset can only reference one image)
 
 
-## Known issues
-* jumping downward into door can cause falling back out but warping to next room, causing you to fall through bottom of world
-* should generate and show credits automatically: pre_credits.txt, then <name>-CREDITS.txt for each <name> (file or folder) in data_path (recursively), then post_credits.txt
-	* IF a line starts with "notify:" then do not display that part (only the rest of the line). Instead, notify the author of use using that information.
-	* IF a line starts with "notified:" then do not display that entire line (it is just for keeping record of when [and how if desired] notified)
 
 
 ## Differences from Platformy

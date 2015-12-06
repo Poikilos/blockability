@@ -74,3 +74,76 @@ def load_level(level, as_index, from_index = None, is_door = True):
     #    +"total_level_width:"+str(total_level_width)+"; "
     #    +"total_level_height:"+str(total_level_height)+"; "
     #    +"}")
+#region class BAWidget
+
+    #def get_autosize_width_padded(self):
+        #width = 0
+        #is_orientation_ok = True
+        #left_margin = 0
+        #right_margin = 0
+        #if self.margin is not None:
+            #left_margin = self.margin[BAWidget.LEFT_INDEX]
+            #right_margin = self.margin[BAWidget.RIGHT_INDEX]
+        #if self.subwidgets is not None:
+            #for this_widget in self.subwidgets:
+                #widget_width_plus_margin = left_margin + this_widget.get_width_padded() + right_margin
+                #if self.orientation == 'horizontal':
+                    #width += widget_width_plus_margin
+                #elif self.orientation == 'vertical':
+                    #height += widget_height_plus_margin
+                    #if widget_width_plus_margin > width:
+                        #width = widget_width_plus_margin
+                #else:
+                    #is_orientation_ok = False
+        #if not is_orientation_ok:
+            #print("ERROR in widget named '"+str(self.name)+"': orientation '"+str(this.orientation)+"' is not known")
+        #empty_span = 0
+        #if self.rect is not None:
+            #empty_span += self.rect.width
+        #if self.padding is not None:
+            #empty_span += self.padding[BAWidget.LEFT_INDEX]+self.padding[BAWidget.RIGHT_INDEX]
+        #if empty_span > width:
+            #width = empty_span
+        #return result
+
+    #def get_autosize_height_padded(self):
+        #height = 0
+        #is_orientation_ok = True
+        #top_margin = 0
+        #bottom_margin = 0
+        #if self.margin is not None:
+            #top_margin = self.margin[BAWidget.TOP_INDEX]
+            #bottom_margin = self.margin[BAWidget.BOTTOM_INDEX]
+        #if self.subwidgets is not None:
+            #for this_widget in self.subwidgets:
+                #widget_height_plus_margin = top_margin + this_widget.get_height_padded() + bottom_margin
+                #if self.orientation == 'horizontal':
+                    #if widget_height_plus_margin > height:
+                        #height = widget_height_plus_margin
+                #elif self.orientation == 'vertical':
+                    #height += widget_height_plus_margin
+                #else:
+                    #is_orientation_ok = False
+        #if not is_orientation_ok:
+            #print("ERROR in widget named '"+str(self.name)+"': orientation '"+str(this.orientation)+"' is not known")
+        #empty_span = 0
+        #if self.rect is not None:
+            #empty_span += self.rect.width
+        #if self.padding is not None:
+            #empty_span += self.padding[BAWidget.TOP_INDEX]+self.padding[BAWidget.BOTTOM_INDEX]
+        #if empty_span > height:
+            #result = empty_span
+        #return height
+        
+    #def grow_minimum_rect_to_text(self):
+        #self.regen_text()
+        #if self._text_rect is not None:
+            #if self.margin[BAWidget.LEFT_INDEX]+self._text_rect.width+self.margin[BAWidget.RIGHT_INDEX] > self._minimum_rect.width:
+                #self._minimum_rect.width = self.margin[BAWidget.LEFT_INDEX]+self._text_rect.width+self.margin[BAWidget.RIGHT_INDEX]
+                ##is_text_bigger = True
+            #if self.margin[BAWidget.TOP_INDEX]+self._text_rect.height+self.margin[BAWidget.BOTTOM_INDEX] > self._minimum_rect.height:
+                #self._minimum_rect.height = self.margin[BAWidget.TOP_INDEX]+self._text_rect.height+self.margin[BAWidget.BOTTOM_INDEX]
+                ##is_text_bigger = True
+        
+        
+#endregion class BAWidget
