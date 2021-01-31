@@ -10,7 +10,7 @@ data_path = os.path.join(".","data")
 class TheMissingString(BAGame):
 
     def run():
-        
+        pass
 
 def main():
     global game

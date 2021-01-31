@@ -1,5 +1,7 @@
-﻿# 
-# Processed by PythonCodeTranslators https://github.com/expertmm/PythonCodeTranslators2015-11-30 16:51:01
+﻿#!/usr/bin/env python
+from __future__ import print_function
+
+# Processed by pycodetool https://github.com/poikilos/pycodetool
 import sys
 # * Created by SharpDevelop.
 # * User: jgustafson
@@ -7,7 +9,7 @@ import sys
 # * Time: 9:02 AM
 # * see python version in ../../d.pygame/ via www.developerfusion.com/tools/convert/csharp-to-python
 # * To change this template use Tools | Options | Coding | Edit Standard Headers.
-# 
+#
 
 # as converted from C# by SharpDevelop 3.0, SharpDevelop 5.1, or http://codeconverter.sharpdevelop.net/SnippetConverter.aspx
 
@@ -202,7 +204,7 @@ class YAMLObject:
 
     def getSubValue(self, name):
         """ <summary>
-         
+
          </summary>
          <param name="name">full variable name (with dot notation if necessary)</param>
          <returns></returns>
@@ -265,7 +267,7 @@ class YAMLObject:
         return self._parent is None
 
     #       public void loadLine(string original_line, ref int currentFileLineIndex) {
-    #           
+    #
     #       }
     def getLines(fileName):
         thisAL = None
