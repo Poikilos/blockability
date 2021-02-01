@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 from __future__ import print_function
 #
-# Processed by pycodetool https://github.com/expertmm/PythonCodeTranslators 2015-11-30 11:08:58
+# Processed by pycodetool https://github.com/poikilos/pycodetool 2015-11-30 11:08:58
 import sys
 # * Created by SharpDevelop.
 # * User: jgustafson
